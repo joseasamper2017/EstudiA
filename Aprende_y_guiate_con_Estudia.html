@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Aprende y guíate con EstudiA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background: #f8fafc; }
+    .card { background: white; border-radius: 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
+    [role="tab"][aria-selected="true"] { outline: 2px solid rgba(59,130,246,0.25); }
+    button { cursor: pointer; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col items-center p-6">
+  
+  <!-- Encabezado principal -->
+  <header class="w-full max-w-6xl mb-6 text-center">
+    <h1 class="text-3xl font-bold text-blue-700">Aprende y guíate con <span class="text-blue-500">EstudiA</span></h1>
+    <p class="text-gray-600 mt-1">Plataforma educativa interactiva para explorar las áreas del conocimiento con apoyo de un tutor inteligente</p>
+  </header>
+
+  <main class="w-full max-w-6xl flex-1">
+    <div class="card p-6 rounded-2xl">
+      <div class="flex flex-col md:flex-row gap-6">
+        <!-- Sidebar -->
+        <nav aria-label="Áreas de conocimiento" class="w-full md:w-56">
+          <ul id="areaTabs" class="space-y-2" role="tablist"></ul>
+        </nav>
+
+        <!-- Panel principal -->
+        <section class="flex-1" aria-live="polite">
+          <header class="mb-4">
+            <h2 id="areaTitle" class="text-2xl font-semibold text-blue-700">Área</h2>
+            <p id="areaSummary" class="text-sm text-gray-600">Selecciona un área para ver su información.</p>
+          </header>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- Objetivos -->
+            <div class="col-span-1 md:col-span-1 bg-gray-50 p-4 rounded-lg">
+              <h3 class="font-medium mb-2">Objetivos</h3>
+              <ul id="areaObjectives" class="list-disc list-inside text-sm text-gray-700 space-y-1"></ul>
+
+              <div class="mt-4 flex gap-2">
+                <button id="startLesson" type="button" class="px-3 py-2 bg-blue-600 text-white rounded-md shadow-sm">Iniciar lección</button>
+                <button id="viewResources" type="button" class="px-3 py-2 border rounded-md">Ver recursos</button>
+              </div>
+
+              <div class="mt-4">
+                <label class="text-xs text-gray-500">Progreso del estudiante</label>
+                <div class="w-full bg-white border rounded-full mt-2">
+                  <div id="progressBar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"
+                    class="h-3 rounded-full bg-blue-500" style="width:0%"></div>
+                </div>
+                <div id="progressLabel" class="text-xs text-gray-500 mt-1">0%</div>
+              </div>
+            </div>
+
+            <!-- Recursos -->
+            <div class="col-span-1 md:col-span-1 bg-white p-4 rounded-lg border">
+              <h3 class="font-medium mb-2">Recursos</h3>
+              <div id="resourcesList" class="space-y-3"></div>
+            </div>
+
+            <!-- Tutor virtual -->
+            <aside class="col-span-1 md:col-span-1 bg-white p-4 rounded-lg border">
+              <div class="flex items-start gap-3">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-green-400 to-blue-500 flex items-center justify-center text-white font-bold">IA</div>
+                <div>
+                  <div class="font-medium">Tutor virtual</div>
+                  <div class="text-xs text-gray-500">Responde dudas, genera ejercicios y adapta el ritmo.</div>
+                </div>
+              </div>
+
+              <div class="mt-3 space-y-2">
+                <button id="chatTutor" type="button" class="w-full px-3 py-2 bg-indigo-600 text-white rounded">Chatear con tutor</button>
+                <button id="autoSummary" type="button" class="w-full px-3 py-2 border rounded">Pedir resumen automático</button>
+                <button id="genExercise" type="button" class="w-full px-3 py-2 border rounded">Generar ejercicio (5 preguntas)</button>
+              </div>
+
+              <div class="mt-4 text-xs text-gray-400">
+                Privacidad: los datos del estudiante se procesan de forma segura.
+              </div>
+            </aside>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <!-- Pie de página -->
+  <footer class="w-full max-w-6xl text-center text-sm text-gray-500 mt-6">
+    © 2025 Aprende y guíate con EstudiA — Plataforma educativa inteligente.
+  </footer>
+
+  <script>
+    const AREAS = [
+      { id: "matematicas", title: "Matemáticas", summary: "Conceptos, ejercicios y evaluaciones sobre álgebra, geometría y estadísticas.", objectives: ["Comprender operaciones básicas y resolver problemas","Interpretar gráficos y tablas","Aplicar medidas de tendencia central"], resources: [{ type: "Video", title: "Introducción a la media", dur: "8 min" },{ type: "PDF", title: "Guía de ejercicios", pages: 5 }], progress: 62 },
+      { id: "ingles", title: "Inglés", summary: "Actividades de comprensión lectora, vocabulario y conversación.", objectives: ["Mejorar comprensión lectora","Ampliar vocabulario","Practicar speaking"], resources: [{ type: "Audio", title: "Listening: Daily routines", dur: "5 min" },{ type: "PDF", title: "Vocabulario esencial", pages: 3 }], progress: 28 },
+      { id: "lenguaje", title: "Lenguaje", summary: "Gramática, redacción y análisis de textos.", objectives: ["Identificar tipos de texto","Mejorar redacción","Analizar figuras literarias"], resources: [{ type: "Video", title: "Estructura del párrafo", dur: "10 min" }], progress: 44 },
+      { id: "ciencias_naturales", title: "Ciencias naturales", summary: "Temas de biología, física y química básicos con experimentos guiados.", objectives: ["Observar fenómenos naturales","Describir procesos","Realizar experimentos sencillos"], resources: [{ type: "PDF", title: "Protocolo de laboratorio", pages: 6 }], progress: 51 },
+      { id: "ciencias_sociales", title: "Ciencias sociales", summary: "Historia, geografía y formación ciudadana.", objectives: ["Comprender procesos sociales","Relacionar hechos históricos","Analizar mapas y recursos"], resources: [{ type: "Interactive", title: "Mapa interactivo", url: "#" }], progress: 15 }
+    ];
+
+    let activeIdx = 0;
+    const tabsContainer = document.getElementById('areaTabs');
+    const areaTitle = document.getElementById('areaTitle');
+    const areaSummary = document.getElementById('areaSummary');
+    const areaObjectives = document.getElementById('areaObjectives');
+    const resourcesList = document.getElementById('resourcesList');
+    const progressBar = document.getElementById('progressBar');
+    const progressLabel = document.getElementById('progressLabel');
+
+    function createTabItem(a, i) {
+      const li = document.createElement('li');
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = `w-full text-left px-4 py-3 rounded-lg transition flex items-center justify-between ${i === activeIdx ? 'bg-blue-50 border border-blue-200' : 'hover:bg-gray-50'}`;
+      btn.setAttribute('role', 'tab');
+      btn.setAttribute('data-index', i);
+      btn.setAttribute('aria-selected', i === activeIdx ? 'true' : 'false');
+      btn.id = `tab-${a.id}`;
+      btn.innerHTML = `<div><div class="font-medium">${a.title}</div><div class="text-xs text-gray-500">${a.progress}% completado</div></div><div class="text-sm text-gray-400">▸</div>`;
+      li.appendChild(btn);
+      return li;
+    }
+
+    function renderTabs() {
+      tabsContainer.innerHTML = '';
+      AREAS.forEach((a, i) => tabsContainer.appendChild(createTabItem(a, i)));
+    }
+
+    tabsContainer.addEventListener('click', e => {
+      const btn = e.target.closest('button[data-index]');
+      if (!btn) return;
+      const idx = Number(btn.getAttribute('data-index'));
+      setActive(idx);
+      btn.focus();
+    });
+
+    function setActive(i) {
+      activeIdx = i;
+      renderTabs();
+      renderActiveArea();
+    }
+
+    function renderActiveArea() {
+      const a = AREAS[activeIdx];
+      areaTitle.textContent = a.title;
+      areaSummary.textContent = a.summary;
+
+      areaObjectives.innerHTML = a.objectives.map(o => `<li>${o}</li>`).join('');
+      resourcesList.innerHTML = a.resources.map(r => `
+        <div class="flex items-center justify-between p-3 border rounded-md">
+          <div>
+            <div class="font-sm font-medium">${r.title}</div>
+            <div class="text-xs text-gray-500">${r.type} ${r.dur ? '• ' + r.dur : ''} ${r.pages ? '• ' + r.pages + ' pág.' : ''}</div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button type="button" class="text-sm px-2 py-1 border rounded">Abrir</button>
+            <button type="button" class="text-sm px-2 py-1 bg-gray-100 rounded">Guardar</button>
+          </div>
+        </div>`).join('');
+
+      progressBar.style.width = `${a.progress}%`;
+      progressBar.setAttribute('aria-valuenow', `${a.progress}`);
+      progressLabel.textContent = `${a.progress}%`;
+    }
+
+    // Inicializar
+    renderTabs();
+    renderActiveArea();
+
+    // Botones simulados
+    document.getElementById('chatTutor').addEventListener('click', () => alert('Se abriría el chat con el tutor virtual (simulación).'));
+    document.getElementById('startLesson').addEventListener('click', () => alert('Iniciar lección: redirigir a la lección o lanzar modal (simulación).'));
+    document.getElementById('genExercise').addEventListener('click', () => alert('Generando 5 preguntas... (simulación)'));
+    document.getElementById('viewResources').addEventListener('click', () => alert('Mostrar todos los recursos (simulación).'));
+    document.getElementById('autoSummary').addEventListener('click', () => alert('Generando resumen automático... (simulación)'));
+  </script>
+</body>
+</html>
+
+
+
